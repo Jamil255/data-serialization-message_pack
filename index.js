@@ -1,7 +1,7 @@
-import exprees from 'express';
+import express from 'express';
 import { encode, decode } from "@msgpack/msgpack"
 import { data } from './sample.js';
-const app = exprees();
+const app = express();
 
 
 const PORT = process.env.PORT || 3000;
@@ -17,6 +17,16 @@ app.get('/', (req, res) => {
     // return res.send(encodedData);
     return res.json(data);
 
+});
+
+
+app.post("/hello", express.raw({ type: 'application/x-msgpack' }), (req, res) => {
+    console.log('Received Raw Body:', req.body);
+    const encodedData = req.body;
+    const decodedData = decode(encodedData);
+    console.log('Decoded Data:', decodedData);
+
+    return res.json({ success: true, message: "Data Received and Decoded", data: decodedData });
 });
 
 
